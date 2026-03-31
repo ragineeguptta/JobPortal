@@ -1,10 +1,16 @@
 ﻿
 
+using JobPortal.UI.Services.Implementations;
+using JobPortal.UI.Services.Interfaces;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services
 builder.Services.AddControllersWithViews();
-builder.Services.AddHttpClient();
+builder.Services.AddHttpClient<IJobService, JobService>(client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7052/");
+});
 
 var app = builder.Build();
 

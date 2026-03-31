@@ -1,4 +1,5 @@
 ﻿using JobPortal.Core.Entities;
+using JobPortal.UI.Services.Interfaces;
 using JobPortal.UI.ViewModels.Job;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,17 +7,16 @@ namespace JobPortal.UI.Controllers
 {
     public class JobController : Controller
     {
-        private readonly HttpClient _client;
+        private readonly IJobService _jobService;
 
-        public JobController(IHttpClientFactory factory)
+        public JobController(IJobService jobService)
         {
-            _client = factory.CreateClient();
-            _client.BaseAddress = new Uri("https://localhost:7052/");
+            _jobService = jobService;
         }
 
         public async Task<IActionResult> Index()
         {
-            var jobs = await _client.GetFromJsonAsync<List<JobListViewModel>>("api/jobs");
+            var jobs = await _jobService.GetJobsAsync();
             return View(jobs);
         }
     }

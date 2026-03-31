@@ -1,4 +1,5 @@
 ﻿using JobPortal.Core.Entities;
+using JobPortal.Core.Interfaces;
 using JobPortal.Infrastructure;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -10,26 +11,28 @@ namespace JobPortal.API.Controllers
     [Route("api/jobs")]
     public class JobsController : ControllerBase
     {
-        private readonly JobPortalDbContext _context;
+        private readonly IJobRepository _jobRepository;
 
-        public JobsController(JobPortalDbContext context)
+        public JobsController(IJobRepository jobRepository)
         {
-            _context = context;
+            _jobRepository = jobRepository;
         }
 
         [HttpGet]
-        public IActionResult GetJobs()
+        public async Task<IActionResult> GetJobs()
         {
-            return Ok(_context.Jobs.ToList());
+            var jobs = await _jobRepository.GetAllAsync();
+            return Ok(jobs);
         }
 
         [Authorize(Roles = "Admin")]
         [HttpPost]
-        public IActionResult CreateJob(Job job)
+        public async Task<IActionResult> CreateJob(Job job)
         {
             job.CreatedAt = DateTime.UtcNow;
-            _context.Jobs.Add(job);
-            _context.SaveChanges();
+
+            await _jobRepository.AddAsync(job);
+
             return Ok(job);
         }
     }

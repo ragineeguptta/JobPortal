@@ -1,5 +1,7 @@
+using JobPortal.Core.Interfaces;
 using JobPortal.Infrastructure;
 using JobPortal.Infrastructure.Data;
+using JobPortal.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -28,6 +30,8 @@ builder.Services.AddAuthentication("Bearer")
                 Encoding.UTF8.GetBytes("THIS_IS_SECRET_KEY"))
         };
     });
+
+builder.Services.AddScoped<IJobRepository, JobRepository>();
 
 var app = builder.Build();
 
