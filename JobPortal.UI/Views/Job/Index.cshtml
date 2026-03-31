@@ -2,10 +2,17 @@
 
 <h2>Job Listings</h2>
 
-@foreach (var job in Model)
-{
-    <div>
-        <h3>@job.Title</h3>
-        <p>@job.Company - @job.Location</p>
-    </div>
-}
+<div class="row">
+    @foreach (var job in Model)
+    {
+        <div class="col-md-4 mb-4">
+            <div class="card p-3">
+                <h5>@job.Title</h5>
+                <p>@job.Company</p>
+                <p>@job.Location</p>
+
+                <a class="btn btn-custom">Apply Now</a>
+            </div>
+        </div>
+    }
+</div>
