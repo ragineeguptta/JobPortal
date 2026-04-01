@@ -11,3 +11,8 @@ window.addEventListener("scroll", function () {
         navbar.style.boxShadow = "none";
     }
 });
+
+// Autofocus on email
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelector("input[name='Email']")?.focus();
+});

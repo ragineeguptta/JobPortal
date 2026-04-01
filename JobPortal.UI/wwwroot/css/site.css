@@ -103,3 +103,33 @@ main {
         transform: translateY(-5px);
         box-shadow: 0 10px 25px rgba(0,0,0,0.15);
     }
+/* 🧊 Center Container */
+.login-container { display: flex; justify-content: center; align-items: center; height: 80vh; }
+
+/* 💎 Glass Card */
+.login-card { background: rgba(255, 255, 255, 0.95); padding: 35px; width: 350px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); text-align: center; }
+
+    /* 📝 Titles */
+    .login-card h2 { margin-bottom: 5px; }
+
+.subtitle { color: gray; margin-bottom: 20px; }
+
+/* 🧾 Form */
+.form-group { text-align: left; margin-bottom: 15px; }
+
+.form-control { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc; transition: 0.3s; }
+
+    .form-control:focus { border-color: #667eea; outline: none; box-shadow: 0 0 5px rgba(102,126,234,0.5); }
+
+/* 🔘 Button */
+.btn-login { width: 100%; padding: 10px; border: none; border-radius: 8px; background: linear-gradient(45deg, #ff7e5f, #feb47b); color: white; font-weight: bold; transition: 0.3s; }
+
+    .btn-login:hover { transform: scale(1.05); }
+
+/* ❌ Error */
+.error { color: red; margin-top: 10px; }
+
+/* 🔗 Links */
+.extra-links { margin-top: 15px; font-size: 14px; }
+
+    .extra-links a { text-decoration: none; color: #667eea; }
