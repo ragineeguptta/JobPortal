@@ -1,4 +1,6 @@
-﻿using JobPortal.Core.Entities;
+﻿using JobPortal.Core.DTO;
+using JobPortal.Core.Entities;
+using JobPortal.Core.Interfaces;
 using JobPortal.Infrastructure;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -13,32 +15,40 @@ namespace JobPortal.API.Controllers
     [Route("api/auth")]
     public class AuthController : ControllerBase
     {
-        private readonly JobPortalDbContext _context;
+        private readonly IAuthRepository _authRepository;
+        private readonly IConfiguration _configuration;
 
-        public AuthController(JobPortalDbContext context)
+        public AuthController(IAuthRepository authRepository, IConfiguration configuration)
         {
-            _context = context;
+            _authRepository = authRepository;
+            _configuration = configuration;
         }
 
         [HttpPost("register")]
-        public IActionResult Register(User user)
+        public async Task<IActionResult> Register(User user)
         {
-            _context.Users.Add(user);
-            _context.SaveChanges();
-            return Ok(user);
+            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(user.PasswordHash);
+
+            var createdUser = await _authRepository.RegisterAsync(user);
+
+            return Ok(createdUser);
         }
 
         [HttpPost("login")]
-        public IActionResult Login(User login)
+        public async Task<IActionResult> Login([FromBody] LoginDto login)
         {
-            var user = _context.Users
-                .FirstOrDefault(x => x.Email == login.Email && x.PasswordHash == login.PasswordHash);
+            var user = await _authRepository.GetUserByEmailAsync(login.Email);
 
             if (user == null)
-                return Unauthorized();
+                return Unauthorized("User not found");
+
+            bool isValidPassword = BCrypt.Net.BCrypt.Verify(login.PasswordHash, user.PasswordHash);
+
+            if (!isValidPassword)
+                return Unauthorized("Invalid password");
 
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.UTF8.GetBytes("THIS_IS_SECRET_KEY");
+            var key = Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]);
 
             var token = tokenHandler.CreateToken(new SecurityTokenDescriptor
             {
