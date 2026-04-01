@@ -53,11 +53,17 @@ namespace JobPortal.UI.Controllers
             return RedirectToAction("Index", "Job");
         }
 
+
         public async Task<IActionResult> Logout()
         {
-            HttpContext.Session.Remove("JWToken");
-            await HttpContext.SignOutAsync();
-            return RedirectToAction("Login");
+            // Remove cookie authentication
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+            // Clear session (JWT)
+            HttpContext.Session.Clear();
+
+            // Redirect to login page
+            return RedirectToAction("Login", "Auth");
         }
     }
 }
