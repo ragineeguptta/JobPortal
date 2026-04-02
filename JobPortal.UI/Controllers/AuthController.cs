@@ -1,4 +1,5 @@
-﻿using JobPortal.UI.Services.Interfaces;
+﻿using JobPortal.Core.Entities;
+using JobPortal.UI.Services.Interfaces;
 using JobPortal.UI.ViewModels.Auth;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -54,6 +55,40 @@ namespace JobPortal.UI.Controllers
         }
 
 
+        [HttpGet]
+        public IActionResult Register()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> Register(RegisterViewModel model)
+        {
+            var token = await _authService.RegisterAsync(model);
+            if (string.IsNullOrEmpty(token))
+            {
+                ViewBag.Error = "Invalid credentials";
+                return View();
+            }
+
+            // ✅ Save token
+            HttpContext.Session.SetString("JWToken", token);
+
+            // ✅ Cookie Auth
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, model.Email)
+            };
+
+            var identity = new ClaimsIdentity(claims,
+                CookieAuthenticationDefaults.AuthenticationScheme);
+
+            var principal = new ClaimsPrincipal(identity);
+
+            await HttpContext.SignInAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme, principal);
+
+            return RedirectToAction("Index", "Job");
+        }
         public async Task<IActionResult> Logout()
         {
             // Remove cookie authentication

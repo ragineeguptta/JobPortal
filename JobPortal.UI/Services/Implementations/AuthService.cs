@@ -32,6 +32,24 @@ namespace JobPortal.UI.Services.Implementations
 
             return tokenObj?.Token;
         }
+
+        public async Task<string?> RegisterAsync(RegisterViewModel model)
+        {
+            var json = JsonSerializer.Serialize(model);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await _client.PostAsync("api/auth/register", content);
+
+            if (!response.IsSuccessStatusCode)
+                return null;
+
+            var result = await response.Content.ReadAsStringAsync();
+
+            var tokenObj = JsonSerializer.Deserialize<TokenResponse>(result,
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+            return tokenObj?.Token;
+        }
     }
 
     public class TokenResponse

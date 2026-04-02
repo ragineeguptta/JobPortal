@@ -29,9 +29,25 @@ namespace JobPortal.API.Controllers
         {
             user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(user.PasswordHash);
 
-            var createdUser = await _authRepository.RegisterAsync(user);
+            //var createdUser = await _authRepository.RegisterAsync(user);
 
-            return Ok(createdUser);
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]);
+
+            var token = tokenHandler.CreateToken(new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new[]
+                {
+                new Claim(ClaimTypes.Role, user.Role),
+                new Claim(ClaimTypes.Name, user.Email)
+            }),
+                Expires = DateTime.UtcNow.AddHours(2),
+                SigningCredentials = new SigningCredentials(
+                    new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256)
+            });
+
+            return Ok(new { token = tokenHandler.WriteToken(token) });
         }
 
         [HttpPost("login")]
