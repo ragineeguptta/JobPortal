@@ -11,8 +11,54 @@
                 <p>@job.Company</p>
                 <p>@job.Location</p>
 
-                <a class="btn btn-custom">Apply Now</a>
+                <a class="btn btn-custom"
+                   data-bs-toggle="modal"
+                   data-bs-target="#applyModal"
+                   onclick="setJobId(@job.Id)">
+                    Apply Now
+                </a>
             </div>
         </div>
     }
 </div>
+
+<!-- ✅ SINGLE MODAL OUTSIDE LOOP -->
+<div class="modal fade" id="applyModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Apply for Job</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <form asp-controller="Job" asp-action="Apply" method="post" enctype="multipart/form-data">
+
+                <div class="modal-body">
+
+                    <!-- FIXED -->
+                    <input type="hidden" id="JobId" name="JobId" />
+
+                    <div class="mb-3">
+                        <label>Upload Resume</label>
+                        <input type="file" name="Resume" class="form-control" required />
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">Submit Application</button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<!-- JS -->
+<script>
+    function setJobId(jobId) {
+        document.getElementById("JobId").value = jobId;
+    }
+</script>

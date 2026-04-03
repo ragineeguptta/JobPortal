@@ -70,6 +70,7 @@ namespace JobPortal.API.Controllers
             {
                 Subject = new ClaimsIdentity(new[]
                 {
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Role, user.Role),
                 new Claim(ClaimTypes.Name, user.Email)
             }),

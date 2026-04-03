@@ -51,6 +51,7 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddScoped<IJobRepository, JobRepository>();
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
+builder.Services.AddScoped<IApplicationRepository, ApplicationRepository>();
 
 var app = builder.Build();
 

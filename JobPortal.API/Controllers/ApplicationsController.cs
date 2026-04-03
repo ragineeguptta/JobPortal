@@ -1,5 +1,8 @@
-﻿using JobPortal.Core.Entities;
+﻿using JobPortal.Core.DTO;
+using JobPortal.Core.Entities;
+using JobPortal.Core.Interfaces;
 using JobPortal.Infrastructure;
+using JobPortal.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,23 +12,28 @@ namespace JobPortal.API.Controllers
     [Route("api/applications")]
     public class ApplicationsController : ControllerBase
     {
-        private readonly JobPortalDbContext _context;
+        private readonly IApplicationRepository _applicationRepository;
 
-        public ApplicationsController(JobPortalDbContext context)
+        public ApplicationsController(IApplicationRepository applicationRepository)
         {
-            _context = context;
+            _applicationRepository = applicationRepository;
         }
 
         [HttpPost("apply")]
-        public IActionResult Apply(Application app)
+        public async Task<IActionResult> Apply(ApplyJobDto dto)
         {
-            app.AppliedAt = DateTime.UtcNow;
-            app.Status = "Applied";
+            var application = new Application
+            {
+                UserId = dto.UserId,
+                JobId = dto.JobId,
+                ResumePath = dto.ResumePath,
+                Status = "Applied",
+                AppliedAt = DateTime.UtcNow
+            };
 
-            _context.Applications.Add(app);
-            _context.SaveChanges();
+            await _applicationRepository.ApplyAsync(application);
 
-            return Ok(app);
+            return Ok(application);
         }
     }
 }

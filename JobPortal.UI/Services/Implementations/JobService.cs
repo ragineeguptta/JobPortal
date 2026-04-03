@@ -1,4 +1,5 @@
-﻿using JobPortal.UI.Services.Interfaces;
+﻿using JobPortal.Core.Entities;
+using JobPortal.UI.Services.Interfaces;
 using JobPortal.UI.ViewModels.Job;
 using System.Net.Http.Headers;
 
@@ -47,6 +48,19 @@ namespace JobPortal.UI.Services.Implementations
             if (!response.IsSuccessStatusCode)
             {
                 throw new Exception("Failed to create job");
+            }
+        }
+
+        public async Task ApplyJobAsync(Application application)
+        {
+
+
+            var response = await _client.PostAsJsonAsync("api/applications/apply", application);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var error = await response.Content.ReadAsStringAsync(); // 🔥 GET REAL ERROR
+                throw new Exception($"API Error: {error}");
             }
         }
     }

@@ -1,4 +1,5 @@
-﻿using JobPortal.UI.ViewModels.Job;
+﻿using JobPortal.Core.Entities;
+using JobPortal.UI.ViewModels.Job;
 
 namespace JobPortal.UI.Services.Interfaces
 {
@@ -6,5 +7,6 @@ namespace JobPortal.UI.Services.Interfaces
     {
         Task<List<JobListViewModel>> GetJobsAsync();
         Task CreateJobAsync(CreateJobViewModel model);
+        Task ApplyJobAsync(Application application);
     }
 }
