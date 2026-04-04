@@ -4,6 +4,7 @@ using JobPortal.Infrastructure;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace JobPortal.API.Controllers
 {
@@ -19,9 +20,17 @@ namespace JobPortal.API.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetJobs()
         {
-            var jobs = await _jobRepository.GetAllAsync();
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (userIdClaim == null)
+                return Unauthorized();
+
+            int userId = int.Parse(userIdClaim);
+
+            var jobs = await _jobRepository.GetJobsWithStatusAsync(userId);
             return Ok(jobs);
         }
 

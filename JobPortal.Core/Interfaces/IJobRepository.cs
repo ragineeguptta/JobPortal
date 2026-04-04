@@ -1,4 +1,5 @@
-﻿using JobPortal.Core.Entities;
+﻿using JobPortal.Core.DTO;
+using JobPortal.Core.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,5 +13,6 @@ namespace JobPortal.Core.Interfaces
         Task<List<Job>> GetAllAsync();
         Task<Job> GetByIdAsync(int id);
         Task AddAsync(Job job);
+        Task<List<JobListDto>> GetJobsWithStatusAsync(int userId);
     }
 }

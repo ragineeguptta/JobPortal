@@ -11,12 +11,21 @@
                 <p>@job.Company</p>
                 <p>@job.Location</p>
 
-                <a class="btn btn-custom"
-                   data-bs-toggle="modal"
-                   data-bs-target="#applyModal"
-                   onclick="setJobId(@job.Id)">
-                    Apply Now
-                </a>
+                @if (job.IsApplied)
+                {
+                    <button class="btn btn-success" disabled>
+                        Applied ✔
+                    </button>
+                }
+                else
+                {
+                    <a class="btn btn-custom"
+                       data-bs-toggle="modal"
+                       data-bs-target="#applyModal"
+                       onclick="setJobId(@job.Id)">
+                        Apply Now
+                    </a>
+                }
             </div>
         </div>
     }
